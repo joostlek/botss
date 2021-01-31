@@ -1,14 +1,20 @@
 package hu.indicium.battle.management.infrastructure.web.controllers;
 
 import hu.indicium.battle.management.application.commands.CreateAssociationCommand;
+import hu.indicium.battle.management.application.commands.CreateParticipantCommand;
 import hu.indicium.battle.management.application.query.AssociationQueryService;
+import hu.indicium.battle.management.application.query.ParticipantQueryService;
 import hu.indicium.battle.management.application.service.AssociationService;
+import hu.indicium.battle.management.application.service.ParticipantService;
 import hu.indicium.battle.management.domain.association.Association;
 import hu.indicium.battle.management.domain.association.AssociationId;
+import hu.indicium.battle.management.domain.participant.Participant;
+import hu.indicium.battle.management.domain.participant.ParticipantId;
 import hu.indicium.battle.management.infrastructure.util.BaseUrl;
 import hu.indicium.battle.management.infrastructure.util.Response;
 import hu.indicium.battle.management.infrastructure.util.ResponseBuilder;
 import hu.indicium.battle.management.infrastructure.web.dto.AssociationDto;
+import hu.indicium.battle.management.infrastructure.web.dto.ParticipantDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +30,10 @@ public class AssociationController {
     private final AssociationQueryService associationQueryService;
 
     private final AssociationService associationService;
+
+    private final ParticipantQueryService participantQueryService;
+
+    private final ParticipantService participantService;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -56,6 +66,31 @@ public class AssociationController {
         AssociationDto associationDto = new AssociationDto(association);
         return ResponseBuilder.created()
                 .data(associationDto)
+                .build();
+    }
+
+    @GetMapping("/{associationSlug}/participants")
+    @ResponseStatus(HttpStatus.OK)
+    public Response<Collection<ParticipantDto>> getParticipantsByAssociationId(@PathVariable String associationSlug) {
+        AssociationId associationId = AssociationId.fromSlug(associationSlug);
+        Collection<Participant> participants = participantQueryService.getParticipantsByAssociationId(associationId);
+        Collection<ParticipantDto> dtos = participants.stream()
+                .map(ParticipantDto::new)
+                .collect(Collectors.toSet());
+        return ResponseBuilder.ok()
+                .data(dtos)
+                .build();
+    }
+
+    @PostMapping("/{associationSlug}/participants")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Response<ParticipantDto> createParticipant(@PathVariable String associationSlug, @RequestBody CreateParticipantCommand createParticipantCommand) {
+        createParticipantCommand.setAssociationSlug(associationSlug);
+        ParticipantId participantId = participantService.createParticipant(createParticipantCommand);
+        Participant participant = participantQueryService.getParticipantById(participantId);
+        ParticipantDto participantDto = new ParticipantDto(participant);
+        return ResponseBuilder.created()
+                .data(participantDto)
                 .build();
     }
 }
