@@ -14,4 +14,6 @@ public interface ParticipantJpaRepository extends JpaRepository<Participant, UUI
     Collection<Participant> getParticipantsByAssociationId(AssociationId associationId);
 
     Participant getParticipantByParticipantId(ParticipantId participantId);
+
+    boolean existsByParticipantDetailsEmailAddress(String emailAddress);
 }

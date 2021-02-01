@@ -35,4 +35,9 @@ public class ParticipantRepositoryImpl implements ParticipantRepository {
     public Participant save(Participant participant) {
         return participantJpaRepository.save(participant);
     }
+
+    @Override
+    public boolean existsByEmailAddress(String emailAddress) {
+        return participantJpaRepository.existsByParticipantDetailsEmailAddress(emailAddress);
+    }
 }

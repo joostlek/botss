@@ -12,4 +12,6 @@ public interface ParticipantRepository {
     Participant getParticipantById(ParticipantId participantId);
 
     Participant save(Participant participant);
+
+    boolean existsByEmailAddress(String emailAddress);
 }

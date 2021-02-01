@@ -4,10 +4,7 @@ import hu.indicium.battle.management.application.commands.CreateParticipantComma
 import hu.indicium.battle.management.domain.association.Association;
 import hu.indicium.battle.management.domain.association.AssociationId;
 import hu.indicium.battle.management.domain.association.AssociationRepository;
-import hu.indicium.battle.management.domain.participant.Participant;
-import hu.indicium.battle.management.domain.participant.ParticipantDetails;
-import hu.indicium.battle.management.domain.participant.ParticipantId;
-import hu.indicium.battle.management.domain.participant.ParticipantRepository;
+import hu.indicium.battle.management.domain.participant.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +21,10 @@ public class ParticipantServiceImpl implements ParticipantService {
     @Override
     public ParticipantId createParticipant(CreateParticipantCommand createParticipantCommand) {
         ParticipantId participantId = ParticipantId.fromUUID(UUID.randomUUID());
+
+        if (participantRepository.existsByEmailAddress(createParticipantCommand.getEmailAddress())) {
+            throw new ParticipantEmailAddressAlreadyInUseException();
+        }
 
         ParticipantDetails participantDetails = new ParticipantDetails(createParticipantCommand.getFirstName(), createParticipantCommand.getLastName(), createParticipantCommand.getEmailAddress(), createParticipantCommand.getPhoneNumber());
 
