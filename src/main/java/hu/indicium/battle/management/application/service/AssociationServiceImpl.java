@@ -4,7 +4,7 @@ import hu.indicium.battle.management.application.commands.CreateAssociationComma
 import hu.indicium.battle.management.domain.association.Association;
 import hu.indicium.battle.management.domain.association.AssociationId;
 import hu.indicium.battle.management.domain.association.AssociationRepository;
-import hu.indicium.battle.management.domain.association.AssociationSlugAlreadyExists;
+import hu.indicium.battle.management.domain.association.AssociationSlugAlreadyExistsException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ public class AssociationServiceImpl implements AssociationService {
         AssociationId associationId = AssociationId.fromSlug(createAssociationCommand.getSlug());
 
         if (associationRepository.existsById(associationId)) {
-            throw new AssociationSlugAlreadyExists();
+            throw new AssociationSlugAlreadyExistsException();
         }
 
         Association association = new Association(associationId, createAssociationCommand.getName(), createAssociationCommand.getLogoUrl());
