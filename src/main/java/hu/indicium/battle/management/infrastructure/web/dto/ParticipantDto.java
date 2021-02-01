@@ -20,12 +20,15 @@ public class ParticipantDto {
 
     private String phoneNumber;
 
+    private boolean hasPaid;
+
     public ParticipantDto(Participant participant) {
-        this.id = participant.getParticipantId().getId();
+        this.id = participant.getId().getId();
         this.associationSlug = participant.getAssociation().getId().getSlug();
         this.firstName = participant.getParticipantDetails().getFirstName();
         this.lastName = participant.getParticipantDetails().getLastName();
         this.emailAddress = participant.getParticipantDetails().getEmailAddress();
         this.phoneNumber = participant.getParticipantDetails().getPhoneNumber();
+        this.hasPaid = participant.hasPaid();
     }
 }

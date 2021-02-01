@@ -38,6 +38,11 @@
             <artifactId>javax.inject</artifactId>
             <version>1</version>
         </dependency>
+        <dependency>
+            <groupId>be.woutschoovaerts</groupId>
+            <artifactId>mollie</artifactId>
+            <version>3.0.1</version>
+        </dependency>
 
         <dependency>
             <groupId>org.postgresql</groupId>

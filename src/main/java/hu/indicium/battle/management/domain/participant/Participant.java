@@ -2,20 +2,21 @@ package hu.indicium.battle.management.domain.participant;
 
 import hu.indicium.battle.management.domain.AssertionConcern;
 import hu.indicium.battle.management.domain.association.Association;
+import hu.indicium.battle.management.domain.participant.payment.Payment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Embedded;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Entity
 @NoArgsConstructor
 public class Participant extends AssertionConcern {
     @EmbeddedId
-    private ParticipantId participantId;
+    private ParticipantId id;
 
     @Embedded
     private ParticipantDetails participantDetails;
@@ -23,14 +24,36 @@ public class Participant extends AssertionConcern {
     @ManyToOne()
     private Association association;
 
-    public Participant(ParticipantId participantId, ParticipantDetails participantDetails, Association association) {
-        this.setParticipantId(participantId);
+    @OneToMany(mappedBy = "participant")
+    private Collection<Payment> payments;
+
+    public Participant(ParticipantId id, ParticipantDetails participantDetails, Association association) {
+        this.setId(id);
         this.setParticipantDetails(participantDetails);
         this.setAssociation(association);
+        this.setPayments(new ArrayList<>());
     }
 
-    public void setParticipantId(ParticipantId participantId) {
-        this.participantId = participantId;
+    public boolean hasActivePayment() {
+        for (Payment payment : payments) {
+            if (payment.isActive()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasPaid() {
+        for (Payment payment : payments) {
+            if (payment.isPaid()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void setId(ParticipantId participantId) {
+        this.id = participantId;
     }
 
     public void setParticipantDetails(ParticipantDetails participantDetails) {
@@ -39,5 +62,9 @@ public class Participant extends AssertionConcern {
 
     public void setAssociation(Association association) {
         this.association = association;
+    }
+
+    public void setPayments(List<Payment> payments) {
+        this.payments = payments;
     }
 }
