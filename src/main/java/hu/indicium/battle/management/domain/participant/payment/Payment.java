@@ -88,4 +88,6 @@ public class Payment extends AssertionConcern {
     public void setMollieDetails(MollieDetails mollieDetails) {
         this.mollieDetails = mollieDetails;
     }
+
+
 }

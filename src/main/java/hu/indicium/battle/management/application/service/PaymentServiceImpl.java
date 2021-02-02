@@ -14,6 +14,9 @@ import hu.indicium.battle.management.infrastructure.mollie.MolliePayment;
 import hu.indicium.battle.management.infrastructure.mollie.MollieService;
 import hu.indicium.battle.management.infrastructure.util.Util;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -23,6 +26,8 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
+@EnableAsync
+@Slf4j
 public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
@@ -53,10 +58,24 @@ public class PaymentServiceImpl implements PaymentService {
 
         MollieDetails mollieDetails = new MollieDetails(molliePayment.getExternalId(), "mollie", molliePayment.getExpiresAt(), molliePayment.getCheckoutUrl(), molliePayment.getWebhookUrl(), molliePayment.getRedirectUrl());
 
-        payment.setMollieDetails(mollieDetails);
+        payment.addMollieDetails(mollieDetails);
 
         paymentRepository.save(payment);
 
         return paymentId;
+    }
+
+    @Override
+    @Async
+    public void updatePayment(String externalId) {
+        MolliePayment molliePayment = mollieService.getPayment(externalId);
+
+        Payment payment = paymentRepository.getPaymentByExternalId(externalId);
+
+        log.info("Updating transaction for {}", payment.getParticipant().getFullName());
+
+        payment.updateStatus(molliePayment.getStatus());
+
+        paymentRepository.save(payment);
     }
 }

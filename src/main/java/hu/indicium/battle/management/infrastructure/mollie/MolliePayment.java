@@ -30,7 +30,7 @@ public class MolliePayment {
     public MolliePayment(PaymentResponse paymentResponse) {
         this.externalId = paymentResponse.getId();
         Map<String, Object> metadata = paymentResponse.getMetadata();
-        String id = (String) metadata.get("transactionId");
+        String id = (String) metadata.get("paymentId");
         UUID uuid = UUID.fromString(id);
         this.paymentId = PaymentId.fromId(uuid);
         this.status = getTransactionStatus(paymentResponse.getStatus());

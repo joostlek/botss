@@ -51,4 +51,11 @@ public class PaymentController {
                 .data(paymentDto)
                 .build();
     }
+
+    @PostMapping("/mollie")
+    @ResponseStatus(HttpStatus.OK)
+    public void processWebhook(@RequestBody String body) {
+        String[] content = body.split("=");
+        paymentService.updatePayment(content[1]);
+    }
 }

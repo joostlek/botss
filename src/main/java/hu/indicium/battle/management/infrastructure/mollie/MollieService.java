@@ -32,15 +32,25 @@ public class MollieService {
                     .currency("EUR")
                     .build();
             Map<String, Object> metadata = new HashMap<>();
-            metadata.put("transactionId", payment.getPaymentId().getId());
+            metadata.put("paymentId", payment.getPaymentId().getId());
             PaymentRequest paymentRequest = PaymentRequest.builder()
                     .amount(amount1)
                     .redirectUrl(Optional.of(redirectUrl))
                     .description(payment.getDescription())
-                    .webhookUrl(Optional.of(System.getenv("SERVICE_BASE") + "/api/v1/mollie"))
+                    .webhookUrl(Optional.of(System.getenv("SERVICE_BASE") + "/api/v1/payments/mollie"))
                     .metadata(metadata)
                     .build();
             PaymentResponse paymentResponse = client.payments().createPayment(paymentRequest);
+            return new MolliePayment(paymentResponse);
+        } catch (MollieException e) {
+            e.printStackTrace();
+            throw new IllegalStateException("Mollie:" + e.getMessage());
+        }
+    }
+
+    public MolliePayment getPayment(String externalId) {
+        try {
+            PaymentResponse paymentResponse = client.payments().getPayment(externalId);
             return new MolliePayment(paymentResponse);
         } catch (MollieException e) {
             e.printStackTrace();

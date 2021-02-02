@@ -5,4 +5,6 @@ import hu.indicium.battle.management.domain.participant.payment.PaymentId;
 
 public interface PaymentService {
     PaymentId createPayment(CreatePaymentCommand createPaymentCommand);
+
+    void updatePayment(String externalId);
 }

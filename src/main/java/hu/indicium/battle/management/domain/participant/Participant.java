@@ -52,6 +52,10 @@ public class Participant extends AssertionConcern {
         return false;
     }
 
+    public String getFullName() {
+        return participantDetails.getFirstName() + participantDetails.getLastName();
+    }
+
     public void setId(ParticipantId participantId) {
         this.id = participantId;
     }
