@@ -1,6 +1,8 @@
 package hu.indicium.battle.management.infrastructure.util;
 
 import hu.indicium.battle.management.domain.participant.ParticipantEmailAddressAlreadyInUseException;
+import hu.indicium.battle.management.domain.participant.payment.ParticipantHasActivePaymentException;
+import hu.indicium.battle.management.domain.participant.payment.ParticipantHasAlreadyPaidException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,22 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> participantEmailAddressAlreadyInUse(ParticipantEmailAddressAlreadyInUseException e, WebRequest request) {
+        return convertToResponseEntity(ResponseBuilder.badRequest().error(toErrorDto(e)).build());
+    }
+
+    @ExceptionHandler({
+            ParticipantHasAlreadyPaidException.class
+    })
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> participantHasAlreadyPaid(ParticipantHasAlreadyPaidException e, WebRequest request) {
+        return convertToResponseEntity(ResponseBuilder.badRequest().error(toErrorDto(e)).build());
+    }
+
+    @ExceptionHandler({
+            ParticipantHasActivePaymentException.class
+    })
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> participantHasActivePayment(ParticipantHasActivePaymentException e, WebRequest request) {
         return convertToResponseEntity(ResponseBuilder.badRequest().error(toErrorDto(e)).build());
     }
 
