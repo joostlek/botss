@@ -4,6 +4,7 @@ import hu.indicium.battle.management.domain.association.AssociationId;
 import hu.indicium.battle.management.domain.participant.Participant;
 import hu.indicium.battle.management.domain.participant.ParticipantId;
 import hu.indicium.battle.management.domain.participant.ParticipantRepository;
+import hu.indicium.battle.management.domain.team.TeamId;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,11 @@ public class ParticipantQueryServiceImpl implements ParticipantQueryService {
     @Override
     public Collection<Participant> getParticipantsByAssociationId(AssociationId associationId) {
         return participantRepository.getParticipantsByAssociationId(associationId);
+    }
+
+    @Override
+    public Collection<Participant> getParticipantsByTeamId(TeamId teamId) {
+        return participantRepository.getParticipantsByTeamId(teamId);
     }
 
     @Override

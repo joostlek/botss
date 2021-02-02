@@ -4,6 +4,7 @@ import hu.indicium.battle.management.domain.association.AssociationId;
 import hu.indicium.battle.management.domain.participant.Participant;
 import hu.indicium.battle.management.domain.participant.ParticipantId;
 import hu.indicium.battle.management.domain.participant.ParticipantRepository;
+import hu.indicium.battle.management.domain.team.TeamId;
 import hu.indicium.battle.management.infrastructure.persistence.jpa.ParticipantJpaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -24,6 +25,11 @@ public class ParticipantRepositoryImpl implements ParticipantRepository {
     @Override
     public Collection<Participant> getParticipantsByAssociationId(AssociationId associationId) {
         return participantJpaRepository.getParticipantsByAssociationId(associationId);
+    }
+
+    @Override
+    public Collection<Participant> getParticipantsByTeamId(TeamId teamId) {
+        return participantJpaRepository.getParticipantByTeamId(teamId);
     }
 
     @Override

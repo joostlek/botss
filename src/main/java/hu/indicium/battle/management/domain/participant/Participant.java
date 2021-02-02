@@ -3,6 +3,9 @@ package hu.indicium.battle.management.domain.participant;
 import hu.indicium.battle.management.domain.AssertionConcern;
 import hu.indicium.battle.management.domain.association.Association;
 import hu.indicium.battle.management.domain.participant.payment.Payment;
+import hu.indicium.battle.management.domain.team.ParticipantNotLegibleToTeamException;
+import hu.indicium.battle.management.domain.team.Team;
+import hu.indicium.battle.management.domain.team.TeamId;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,6 +29,12 @@ public class Participant extends AssertionConcern {
 
     @OneToMany(mappedBy = "participant")
     private Collection<Payment> payments;
+
+    @ManyToOne()
+    private Team team;
+
+    @OneToOne(mappedBy = "captain")
+    private Team captainOf;
 
     public Participant(ParticipantId id, ParticipantDetails participantDetails, Association association) {
         this.setId(id);
@@ -52,23 +61,42 @@ public class Participant extends AssertionConcern {
         return false;
     }
 
+    public boolean isInTeam() {
+        return this.team != null;
+    }
+
+    public boolean isCaptain() {
+        return this.captainOf != null;
+    }
+
+    public boolean eligibleToJoin() {
+        return hasPaid() && !isInTeam();
+    }
+
     public String getFullName() {
         return participantDetails.getFirstName() + participantDetails.getLastName();
     }
 
-    public void setId(ParticipantId participantId) {
+    private void setId(ParticipantId participantId) {
         this.id = participantId;
     }
 
-    public void setParticipantDetails(ParticipantDetails participantDetails) {
+    private void setParticipantDetails(ParticipantDetails participantDetails) {
         this.participantDetails = participantDetails;
     }
 
-    public void setAssociation(Association association) {
+    private void setAssociation(Association association) {
         this.association = association;
     }
 
-    public void setPayments(List<Payment> payments) {
+    private void setPayments(List<Payment> payments) {
         this.payments = payments;
+    }
+
+    public void setTeam(Team team) {
+        if (!this.eligibleToJoin()) {
+            throw new ParticipantNotLegibleToTeamException();
+        }
+        this.team = team;
     }
 }
