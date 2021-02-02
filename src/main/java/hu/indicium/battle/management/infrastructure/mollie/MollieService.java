@@ -37,7 +37,7 @@ public class MollieService {
                     .amount(amount1)
                     .redirectUrl(Optional.of(redirectUrl))
                     .description(payment.getDescription())
-                    .webhookUrl(Optional.of(System.getenv("SERVICE_BASE" + "/api/v1/mollie")))
+                    .webhookUrl(Optional.of(System.getenv("SERVICE_BASE") + "/api/v1/mollie"))
                     .metadata(metadata)
                     .build();
             PaymentResponse paymentResponse = client.payments().createPayment(paymentRequest);

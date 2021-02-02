@@ -47,9 +47,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         PaymentId paymentId = PaymentId.fromId(UUID.randomUUID());
 
-        Payment payment = new Payment(paymentId, participant, 1.5);
-
-        payment = paymentRepository.save(payment);
+        Payment payment = new Payment(paymentId, participant, "Battle of the study societies entree", 1.5);
 
         MolliePayment molliePayment = mollieService.createPayment(payment, createPaymentCommand.getRedirectUrl());
 

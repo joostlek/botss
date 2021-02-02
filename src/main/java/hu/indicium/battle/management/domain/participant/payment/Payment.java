@@ -31,7 +31,7 @@ public class Payment extends AssertionConcern {
     @ManyToOne()
     private Participant participant;
 
-    public Payment(PaymentId paymentId, Participant participant, Double amount) {
+    public Payment(PaymentId paymentId, Participant participant, String description, Double amount) {
         this.setPaymentId(paymentId);
         this.setParticipant(participant);
         this.setAmount(amount);
