@@ -1,5 +1,6 @@
 package hu.indicium.battle.management.infrastructure.util;
 
+import hu.indicium.battle.management.domain.participant.ParticipantEmailAddressAlreadyInUseException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,14 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<Object> entityNotFound(EntityNotFoundException e, WebRequest request) {
         return convertToResponseEntity(ResponseBuilder.notFound().error(toErrorDto(e)).build());
+    }
+
+    @ExceptionHandler({
+            ParticipantEmailAddressAlreadyInUseException.class
+    })
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> participantEmailAddressAlreadyInUse(ParticipantEmailAddressAlreadyInUseException e, WebRequest request) {
+        return convertToResponseEntity(ResponseBuilder.badRequest().error(toErrorDto(e)).build());
     }
 
     @Override
