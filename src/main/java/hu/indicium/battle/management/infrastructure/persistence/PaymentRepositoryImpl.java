@@ -19,7 +19,7 @@ public class PaymentRepositoryImpl implements PaymentRepository {
 
     @Override
     public Collection<Payment> getAllPayments() {
-        return paymentRepository.getAllPayments();
+        return paymentRepository.findAll();
     }
 
     @Override

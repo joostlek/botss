@@ -18,7 +18,7 @@ public class ParticipantRepositoryImpl implements ParticipantRepository {
 
     @Override
     public Collection<Participant> getAllParticipants() {
-        return participantJpaRepository.getAllParticipants();
+        return participantJpaRepository.findAll();
     }
 
     @Override
@@ -28,7 +28,7 @@ public class ParticipantRepositoryImpl implements ParticipantRepository {
 
     @Override
     public Participant getParticipantById(ParticipantId participantId) {
-        return participantJpaRepository.getParticipantByParticipantId(participantId);
+        return participantJpaRepository.getParticipantById(participantId);
     }
 
     @Override

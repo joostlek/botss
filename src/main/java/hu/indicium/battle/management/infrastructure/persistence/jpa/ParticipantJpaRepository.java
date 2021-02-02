@@ -9,11 +9,9 @@ import java.util.Collection;
 import java.util.UUID;
 
 public interface ParticipantJpaRepository extends JpaRepository<Participant, UUID> {
-    Collection<Participant> getAllParticipants();
-
     Collection<Participant> getParticipantsByAssociationId(AssociationId associationId);
 
-    Participant getParticipantByParticipantId(ParticipantId participantId);
+    Participant getParticipantById(ParticipantId participantId);
 
     boolean existsByParticipantDetailsEmailAddress(String emailAddress);
 }

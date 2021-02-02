@@ -12,8 +12,6 @@ import java.util.UUID;
 
 @Repository
 public interface PaymentJpaRepository extends JpaRepository<Payment, UUID> {
-    Collection<Payment> getAllPayments();
-
     Collection<Payment> getPaymentsByParticipantId(ParticipantId participantId);
 
     Collection<Payment> getPaymentsByParticipantAssociationId(AssociationId associationId);
