@@ -22,14 +22,14 @@ import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(BaseUrl.API_V1)
+@RequestMapping(BaseUrl.API_V1 + "/payments")
 public class PaymentController {
 
     private final PaymentService paymentService;
 
     private final PaymentQueryService paymentQueryService;
 
-    @GetMapping("/payments")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Response<Collection<PaymentDto>> getAllPayments() {
         Collection<Payment> payments = paymentQueryService.getAllPayments();
@@ -41,50 +41,11 @@ public class PaymentController {
                 .build();
     }
 
-    @GetMapping("/participants/{participantId}/payments")
-    @ResponseStatus(HttpStatus.OK)
-    public Response<Collection<PaymentDto>> getPaymentsByParticipantId(@PathVariable("participantId") UUID participantUuid) {
-        ParticipantId participantId = ParticipantId.fromUUID(participantUuid);
-        Collection<Payment> payments = paymentQueryService.getPaymentsByParticipantId(participantId);
-        Collection<PaymentDto> dtos = payments.stream()
-                .map(PaymentDto::new)
-                .collect(Collectors.toSet());
-        return ResponseBuilder.ok()
-                .data(dtos)
-                .build();
-    }
-
-    @GetMapping("/associations/{associationSlug}/payments")
-    @ResponseStatus(HttpStatus.OK)
-    public Response<Collection<PaymentDto>> getPaymentsByAssociation(@PathVariable String associationSlug) {
-        AssociationId associationId = AssociationId.fromSlug(associationSlug);
-        Collection<Payment> payments = paymentQueryService.getPaymentsByAssociationId(associationId);
-        Collection<PaymentDto> dtos = payments.stream()
-                .map(PaymentDto::new)
-                .collect(Collectors.toSet());
-        return ResponseBuilder.ok()
-                .data(dtos)
-                .build();
-    }
-
-    @GetMapping("/payments/{paymentId}")
+    @GetMapping("/{paymentId}")
     @ResponseStatus(HttpStatus.OK)
     public Response<PaymentDto> getPaymentById(@PathVariable UUID paymentId) {
         PaymentId id = PaymentId.fromId(paymentId);
         Payment payment = paymentQueryService.getPaymentByPaymentId(id);
-        PaymentDto paymentDto = new PaymentDto(payment);
-        return ResponseBuilder.ok()
-                .data(paymentDto)
-                .build();
-    }
-
-    @PostMapping("/participants/{participantId}/payments")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Response<PaymentDto> createPayment(@PathVariable("participantId") UUID participantUuid, @RequestBody CreatePaymentCommand createPaymentCommand) {
-        ParticipantId participantId = ParticipantId.fromUUID(participantUuid);
-        createPaymentCommand.setParticipantId(participantId);
-        PaymentId paymentId = paymentService.createPayment(createPaymentCommand);
-        Payment payment = paymentQueryService.getPaymentByPaymentId(paymentId);
         PaymentDto paymentDto = new PaymentDto(payment);
         return ResponseBuilder.ok()
                 .data(paymentDto)

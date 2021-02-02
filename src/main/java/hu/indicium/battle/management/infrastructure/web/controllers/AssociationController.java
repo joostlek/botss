@@ -4,17 +4,20 @@ import hu.indicium.battle.management.application.commands.CreateAssociationComma
 import hu.indicium.battle.management.application.commands.CreateParticipantCommand;
 import hu.indicium.battle.management.application.query.AssociationQueryService;
 import hu.indicium.battle.management.application.query.ParticipantQueryService;
+import hu.indicium.battle.management.application.query.PaymentQueryService;
 import hu.indicium.battle.management.application.service.AssociationService;
 import hu.indicium.battle.management.application.service.ParticipantService;
 import hu.indicium.battle.management.domain.association.Association;
 import hu.indicium.battle.management.domain.association.AssociationId;
 import hu.indicium.battle.management.domain.participant.Participant;
 import hu.indicium.battle.management.domain.participant.ParticipantId;
+import hu.indicium.battle.management.domain.participant.payment.Payment;
 import hu.indicium.battle.management.infrastructure.util.BaseUrl;
 import hu.indicium.battle.management.infrastructure.util.Response;
 import hu.indicium.battle.management.infrastructure.util.ResponseBuilder;
 import hu.indicium.battle.management.infrastructure.web.dto.AssociationDto;
 import hu.indicium.battle.management.infrastructure.web.dto.ParticipantDto;
+import hu.indicium.battle.management.infrastructure.web.dto.PaymentDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +38,8 @@ public class AssociationController {
 
     private final ParticipantService participantService;
 
+    private final PaymentQueryService paymentQueryService;
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Response<Collection<AssociationDto>> getAllAssociations() {
@@ -49,7 +54,7 @@ public class AssociationController {
 
     @GetMapping("/{associationSlug}")
     @ResponseStatus(HttpStatus.OK)
-    public Response<AssociationDto> getAssociationByAssociationId(@RequestParam String associationSlug) {
+    public Response<AssociationDto> getAssociationByAssociationSlug(@PathVariable String associationSlug) {
         AssociationId associationId = AssociationId.fromSlug(associationSlug);
         Association association = associationQueryService.getAssociationByAssociationId(associationId);
         AssociationDto associationDto = new AssociationDto(association);
@@ -91,6 +96,19 @@ public class AssociationController {
         ParticipantDto participantDto = new ParticipantDto(participant);
         return ResponseBuilder.created()
                 .data(participantDto)
+                .build();
+    }
+
+    @GetMapping("/{associationSlug}/payments")
+    @ResponseStatus(HttpStatus.OK)
+    public Response<Collection<PaymentDto>> getPaymentsByAssociation(@PathVariable String associationSlug) {
+        AssociationId associationId = AssociationId.fromSlug(associationSlug);
+        Collection<Payment> payments = paymentQueryService.getPaymentsByAssociationId(associationId);
+        Collection<PaymentDto> dtos = payments.stream()
+                .map(PaymentDto::new)
+                .collect(Collectors.toSet());
+        return ResponseBuilder.ok()
+                .data(dtos)
                 .build();
     }
 }
