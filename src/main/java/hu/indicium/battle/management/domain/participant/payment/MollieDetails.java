@@ -3,6 +3,7 @@ package hu.indicium.battle.management.domain.participant.payment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Date;
@@ -11,16 +12,22 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 public class MollieDetails implements Serializable {
+    @Column(name = "externalId")
     private String externalId;
 
+    @Column(name = "paymentProvider")
     private String paymentProvider;
 
+    @Column(name = "expiresAt")
     private Date expiresAt;
 
+    @Column(name = "checkoutUrl")
     private String checkoutUrl;
 
+    @Column(name = "webhookUrl")
     private String webhookUrl;
 
+    @Column(name = "redirectUrl")
     private String redirectUrl;
 
     public MollieDetails(String externalId, String paymentProvider, Date expiresAt, String checkoutUrl, String webhookUrl, String redirectUrl) {
