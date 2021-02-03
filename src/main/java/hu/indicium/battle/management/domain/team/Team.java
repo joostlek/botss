@@ -31,6 +31,8 @@ public class Team extends AssertionConcern {
     @JoinColumn(name = "captain_id", referencedColumnName = "id")
     private Participant captain;
 
+    public static final int MIN_PARTICIPANTS = 1;
+
     public static final int MAX_PARTICIPANTS = 4;
 
     public Team(TeamId id, String name, Participant captain) {
@@ -73,6 +75,10 @@ public class Team extends AssertionConcern {
         }
         participant.setTeam(null);
         members.remove(participant);
+    }
+
+    public boolean isEligible() {
+        return getTeamSize() >= MIN_PARTICIPANTS && getTeamSize() <= MAX_PARTICIPANTS;
     }
 
     public int getTeamSize() {
