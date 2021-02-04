@@ -9,6 +9,7 @@ import hu.indicium.battle.management.infrastructure.persistence.jpa.ParticipantJ
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 
 @Repository
@@ -34,7 +35,8 @@ public class ParticipantRepositoryImpl implements ParticipantRepository {
 
     @Override
     public Participant getParticipantById(ParticipantId participantId) {
-        return participantJpaRepository.getParticipantById(participantId);
+        return participantJpaRepository.findParticipantById(participantId)
+                .orElseThrow(() -> new EntityNotFoundException("Could not find participant."));
     }
 
     @Override
