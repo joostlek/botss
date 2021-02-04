@@ -22,6 +22,8 @@ public class ParticipantDto {
 
     private boolean hasPaid;
 
+    private UUID teamId;
+
     public ParticipantDto(Participant participant) {
         this.id = participant.getId().getId();
         this.associationSlug = participant.getAssociation().getId().getSlug();
@@ -30,5 +32,8 @@ public class ParticipantDto {
         this.emailAddress = participant.getParticipantDetails().getEmailAddress();
         this.phoneNumber = participant.getParticipantDetails().getPhoneNumber();
         this.hasPaid = participant.hasPaid();
+        if (participant.isInTeam()) {
+            this.teamId = participant.getTeam().getId().getId();
+        }
     }
 }

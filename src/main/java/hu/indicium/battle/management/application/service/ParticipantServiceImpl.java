@@ -5,6 +5,8 @@ import hu.indicium.battle.management.domain.association.Association;
 import hu.indicium.battle.management.domain.association.AssociationId;
 import hu.indicium.battle.management.domain.association.AssociationRepository;
 import hu.indicium.battle.management.domain.participant.*;
+import hu.indicium.battle.management.infrastructure.auth.AuthService;
+import hu.indicium.battle.management.infrastructure.auth.AuthUser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +20,13 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     private final AssociationRepository associationRepository;
 
+    private final AuthService authService;
+
     @Override
     public ParticipantId createParticipant(CreateParticipantCommand createParticipantCommand) {
-        ParticipantId participantId = ParticipantId.fromUUID(UUID.randomUUID());
+        AuthUser authUser = authService.getCurrentUser();
+
+        ParticipantId participantId = authUser.getParticipantId();
 
         if (participantRepository.existsByEmailAddress(createParticipantCommand.getEmailAddress())) {
             throw new ParticipantEmailAddressAlreadyInUseException();

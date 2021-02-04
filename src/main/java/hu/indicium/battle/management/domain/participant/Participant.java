@@ -94,7 +94,7 @@ public class Participant extends AssertionConcern {
     }
 
     public void setTeam(Team team) {
-        if (!this.eligibleToJoin()) {
+        if (team != null && !this.eligibleToJoin()) {
             throw new ParticipantNotLegibleToTeamException();
         }
         this.team = team;

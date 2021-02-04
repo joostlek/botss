@@ -12,6 +12,7 @@ import hu.indicium.battle.management.domain.association.AssociationId;
 import hu.indicium.battle.management.domain.participant.Participant;
 import hu.indicium.battle.management.domain.participant.ParticipantId;
 import hu.indicium.battle.management.domain.participant.payment.Payment;
+import hu.indicium.battle.management.infrastructure.auth.AuthService;
 import hu.indicium.battle.management.infrastructure.util.BaseUrl;
 import hu.indicium.battle.management.infrastructure.util.Response;
 import hu.indicium.battle.management.infrastructure.util.ResponseBuilder;

@@ -9,6 +9,8 @@ import hu.indicium.battle.management.domain.team.ParticipantNotLegibleToTeamExce
 import hu.indicium.battle.management.domain.team.Team;
 import hu.indicium.battle.management.domain.team.TeamId;
 import hu.indicium.battle.management.domain.team.TeamRepository;
+import hu.indicium.battle.management.infrastructure.auth.AuthService;
+import hu.indicium.battle.management.infrastructure.auth.AuthUser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,13 +24,17 @@ public class TeamServiceImpl implements TeamService {
 
     private final ParticipantRepository participantRepository;
 
+    private final AuthService authService;
+
     @Override
     public TeamId createTeam(CreateTeamCommand createTeamCommand) {
         TeamId teamId = TeamId.fromUUID(UUID.randomUUID());
 
-        Participant participant = participantRepository.getParticipantById(createTeamCommand.getTeamCaptainId());
+        AuthUser authUser = authService.getCurrentUser();
 
-        if (participant.eligibleToJoin()) {
+        Participant participant = participantRepository.getParticipantById(authUser.getParticipantId());
+
+        if (!participant.eligibleToJoin()) {
             throw new ParticipantNotLegibleToTeamException();
         }
 

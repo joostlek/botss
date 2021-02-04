@@ -6,6 +6,4 @@ import lombok.Data;
 @Data
 public class CreateTeamCommand {
     private String name;
-
-    private ParticipantId teamCaptainId;
 }

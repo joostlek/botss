@@ -10,6 +10,8 @@ import hu.indicium.battle.management.domain.participant.Participant;
 import hu.indicium.battle.management.domain.participant.ParticipantId;
 import hu.indicium.battle.management.domain.team.Team;
 import hu.indicium.battle.management.domain.team.TeamId;
+import hu.indicium.battle.management.infrastructure.auth.AuthService;
+import hu.indicium.battle.management.infrastructure.auth.AuthUser;
 import hu.indicium.battle.management.infrastructure.util.BaseUrl;
 import hu.indicium.battle.management.infrastructure.util.Response;
 import hu.indicium.battle.management.infrastructure.util.ResponseBuilder;
@@ -33,6 +35,8 @@ public class TeamController {
 
     private final ParticipantQueryService participantQueryService;
 
+    private final AuthService authService;
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Response<Collection<TeamDto>> getAllTeams() {
@@ -48,8 +52,6 @@ public class TeamController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Response<TeamDto> createTeam(@RequestBody CreateTeamCommand createTeamCommand) {
-        ParticipantId participantId = ParticipantId.fromUUID(UUID.fromString("8b6781b4-8f08-482d-9b06-a16ccc7fcc64"));
-        createTeamCommand.setTeamCaptainId(participantId);
         TeamId teamId = teamService.createTeam(createTeamCommand);
         Team team = teamQueryService.getTeamById(teamId);
         TeamDto teamDto = new TeamDto(team);
@@ -85,8 +87,8 @@ public class TeamController {
     @PostMapping("/join")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Response<TeamDto> joinTeamWithJoinCode(@RequestBody JoinTeamCommand joinTeamCommand) {
-        ParticipantId participantId = ParticipantId.fromUUID(UUID.fromString("bd49d483-0bdb-438a-a92c-bdb8af154554"));
-        teamService.useJoinCodeForParticipant(joinTeamCommand.getJoinCode(), participantId);
+        AuthUser authUser = authService.getCurrentUser();
+        teamService.useJoinCodeForParticipant(joinTeamCommand.getJoinCode(), authUser.getParticipantId());
         Team team = teamQueryService.getTeamByJoinCode(joinTeamCommand.getJoinCode());
         TeamDto teamDto = new TeamDto(team);
         return ResponseBuilder.accepted()
