@@ -47,6 +47,17 @@ public class ParticipantController {
                 .build();
     }
 
+    @GetMapping("/{participantId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Response<ParticipantDto> getParticipantById(@PathVariable UUID participantId) {
+        ParticipantId participantId1 = ParticipantId.fromUUID(participantId);
+        Participant participant = participantQueryService.getParticipantById(participantId1);
+        ParticipantDto participantDto = new ParticipantDto(participant);
+        return ResponseBuilder.ok()
+                .data(participantDto)
+                .build();
+    }
+
     @GetMapping("/{participantId}/payments")
     @ResponseStatus(HttpStatus.OK)
     public Response<Collection<PaymentDto>> getPaymentsByParticipantId(@PathVariable("participantId") UUID participantUuid) {
