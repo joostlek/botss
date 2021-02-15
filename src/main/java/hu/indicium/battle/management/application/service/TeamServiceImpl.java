@@ -11,9 +11,11 @@ import hu.indicium.battle.management.domain.team.TeamId;
 import hu.indicium.battle.management.domain.team.TeamRepository;
 import hu.indicium.battle.management.infrastructure.auth.AuthService;
 import hu.indicium.battle.management.infrastructure.auth.AuthUser;
+import hu.indicium.battle.management.infrastructure.auth.KeycloakService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.UUID;
 
 @Service
@@ -26,7 +28,10 @@ public class TeamServiceImpl implements TeamService {
 
     private final AuthService authService;
 
+    private final KeycloakService keycloakService;
+
     @Override
+    @Transactional
     public TeamId createTeam(CreateTeamCommand createTeamCommand) {
         TeamId teamId = TeamId.fromUUID(UUID.randomUUID());
 
@@ -42,6 +47,8 @@ public class TeamServiceImpl implements TeamService {
 
         teamRepository.save(team);
 
+        keycloakService.setTeamForTeamCaptain(authUser.getParticipantId(), teamId);
+
         return teamId;
     }
 
@@ -55,6 +62,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    @Transactional
     public void useJoinCodeForParticipant(String joinCode, ParticipantId participantId) {
         Team team = teamRepository.findTeamByJoinCode(joinCode);
 
@@ -63,9 +71,12 @@ public class TeamServiceImpl implements TeamService {
         team.addParticipant(participant);
 
         teamRepository.save(team);
+
+        keycloakService.setTeamForParticipant(participantId, team.getId());
     }
 
     @Override
+    @Transactional
     public void removeParticipantFromTeam(TeamId teamId, ParticipantId participantId) {
         Team team = teamRepository.getByTeamId(teamId);
 
@@ -74,5 +85,7 @@ public class TeamServiceImpl implements TeamService {
         team.removeParticipant(participant);
 
         teamRepository.save(team);
+
+        keycloakService.resetTeamForParticipant(participantId);
     }
 }

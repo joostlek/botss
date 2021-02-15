@@ -7,9 +7,11 @@ import hu.indicium.battle.management.domain.association.AssociationRepository;
 import hu.indicium.battle.management.domain.participant.*;
 import hu.indicium.battle.management.infrastructure.auth.AuthService;
 import hu.indicium.battle.management.infrastructure.auth.AuthUser;
+import hu.indicium.battle.management.infrastructure.auth.KeycloakService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -22,7 +24,10 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     private final AuthService authService;
 
+    private final KeycloakService keycloakService;
+
     @Override
+    @Transactional
     public ParticipantId createParticipant(CreateParticipantCommand createParticipantCommand) {
         AuthUser authUser = authService.getCurrentUser();
 
@@ -41,6 +46,8 @@ public class ParticipantServiceImpl implements ParticipantService {
         Participant participant = new Participant(participantId, participantDetails, association);
 
         participantRepository.save(participant);
+
+        keycloakService.setAssociationForParticipant(participantId, associationId);
 
         return participantId;
     }
