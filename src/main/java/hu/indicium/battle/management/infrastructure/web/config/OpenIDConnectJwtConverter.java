@@ -62,6 +62,15 @@ public class OpenIDConnectJwtConverter implements Converter<Jwt, AbstractAuthent
                 }
             }
         }
+        Map<String, Object> teamInfo = jwt.getClaimAsMap("team");
+        if (teamInfo != null && !teamInfo.isEmpty()) {
+            String teamId = (String) teamInfo.get("id");
+            boolean teamCaptain = (boolean) teamInfo.get("captain");
+            authorities.add("botss-management/view-team/" + teamId);
+            if (teamCaptain) {
+                authorities.add("botss-management/manage-team/" + teamId);
+            }
+        }
         return authorities;
     }
 

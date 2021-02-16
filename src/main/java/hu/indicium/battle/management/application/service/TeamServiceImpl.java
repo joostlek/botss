@@ -13,6 +13,7 @@ import hu.indicium.battle.management.infrastructure.auth.AuthService;
 import hu.indicium.battle.management.infrastructure.auth.AuthUser;
 import hu.indicium.battle.management.infrastructure.auth.KeycloakService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -53,6 +54,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    @PreAuthorize("isTeamCaptain(#updateTeamCommand.teamId.id.toString())")
     public void updateTeam(UpdateTeamCommand updateTeamCommand) {
         Team team = teamRepository.getByTeamId(updateTeamCommand.getTeamId());
 

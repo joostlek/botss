@@ -22,6 +22,8 @@ public class KeycloakServiceImpl implements KeycloakService {
 
     public static final String TEAM_CAPTAIN_ATTRIBUTE = "teamCaptain";
 
+    public static final String PAID_ATTRIBUTE = "hasPaid";
+
     private final UsersResource usersResource;
 
     @Override
@@ -56,6 +58,14 @@ public class KeycloakServiceImpl implements KeycloakService {
         UserRepresentation userRepresentation = userResource.toRepresentation();
         userRepresentation.singleAttribute(TEAM_ID_ATTRIBUTE, "")
                 .singleAttribute(TEAM_CAPTAIN_ATTRIBUTE, "false");
+        userResource.update(userRepresentation);
+    }
+
+    @Override
+    public void setPaymentStatusPaidForParticipant(ParticipantId participantId) {
+        UserResource userResource = usersResource.get(participantId.getId().toString());
+        UserRepresentation userRepresentation = userResource.toRepresentation();
+        userRepresentation.singleAttribute(PAID_ATTRIBUTE, "true");
         userResource.update(userRepresentation);
     }
 }

@@ -13,4 +13,6 @@ public interface KeycloakService {
     void setTeamForTeamCaptain(ParticipantId participantId, TeamId teamId);
 
     void resetTeamForParticipant(ParticipantId participantId);
+
+    void setPaymentStatusPaidForParticipant(ParticipantId participantId);
 }

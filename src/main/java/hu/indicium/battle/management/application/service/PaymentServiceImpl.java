@@ -10,6 +10,7 @@ import hu.indicium.battle.management.domain.participant.Participant;
 import hu.indicium.battle.management.domain.participant.ParticipantId;
 import hu.indicium.battle.management.domain.participant.ParticipantRepository;
 import hu.indicium.battle.management.domain.participant.payment.*;
+import hu.indicium.battle.management.infrastructure.auth.KeycloakService;
 import hu.indicium.battle.management.infrastructure.mollie.MolliePayment;
 import hu.indicium.battle.management.infrastructure.mollie.MollieService;
 import hu.indicium.battle.management.infrastructure.util.Util;
@@ -35,6 +36,8 @@ public class PaymentServiceImpl implements PaymentService {
     private final ParticipantRepository participantRepository;
 
     private final MollieService mollieService;
+
+    private final KeycloakService keycloakService;
 
     @Override
     public PaymentId createPayment(CreatePaymentCommand createPaymentCommand) {
@@ -72,10 +75,14 @@ public class PaymentServiceImpl implements PaymentService {
 
         Payment payment = paymentRepository.getPaymentByExternalId(externalId);
 
-        log.info("Updating transaction for {}", payment.getParticipant().getFullName());
+        Participant participant = payment.getParticipant();
+
+        log.info("Updating transaction for {}", participant.getFullName());
 
         payment.updateStatus(molliePayment.getStatus());
 
         paymentRepository.save(payment);
+
+        keycloakService.setPaymentStatusPaidForParticipant(participant.getId());
     }
 }
