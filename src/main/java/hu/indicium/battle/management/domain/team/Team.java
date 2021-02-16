@@ -94,6 +94,9 @@ public class Team extends AssertionConcern {
     }
 
     public void setName(String name) {
+        this.assertArgumentNotEmpty(name, "Team name must not be empty.");
+        this.assertArgumentLength(name, 50, "Team name must be shorter than 50 characters.");
+
         this.name = name;
     }
 
