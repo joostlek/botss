@@ -11,7 +11,6 @@ import hu.indicium.battle.management.domain.team.TeamId;
 import hu.indicium.battle.management.domain.team.TeamRepository;
 import hu.indicium.battle.management.infrastructure.auth.AuthService;
 import hu.indicium.battle.management.infrastructure.auth.AuthUser;
-import hu.indicium.battle.management.infrastructure.auth.KeycloakService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -29,10 +28,9 @@ public class TeamServiceImpl implements TeamService {
 
     private final AuthService authService;
 
-    private final KeycloakService keycloakService;
-
     @Override
     @Transactional
+    @PreAuthorize("hasPermission('create-team')")
     public TeamId createTeam(CreateTeamCommand createTeamCommand) {
         TeamId teamId = TeamId.fromUUID(UUID.randomUUID());
 
@@ -48,13 +46,11 @@ public class TeamServiceImpl implements TeamService {
 
         teamRepository.save(team);
 
-        keycloakService.setTeamForTeamCaptain(authUser.getParticipantId(), teamId);
-
         return teamId;
     }
 
     @Override
-    @PreAuthorize("isTeamCaptain(#updateTeamCommand.teamId.id.toString())")
+    @PreAuthorize("hasPermission('update-team') && isTeamCaptain(#updateTeamCommand.teamId.id)")
     public void updateTeam(UpdateTeamCommand updateTeamCommand) {
         Team team = teamRepository.getByTeamId(updateTeamCommand.getTeamId());
 
@@ -65,6 +61,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasPermission('join-team')")
     public void useJoinCodeForParticipant(String joinCode, ParticipantId participantId) {
         Team team = teamRepository.findTeamByJoinCode(joinCode);
 
@@ -73,8 +70,6 @@ public class TeamServiceImpl implements TeamService {
         team.addParticipant(participant);
 
         teamRepository.save(team);
-
-        keycloakService.setTeamForParticipant(participantId, team.getId());
     }
 
     @Override
@@ -87,7 +82,5 @@ public class TeamServiceImpl implements TeamService {
         team.removeParticipant(participant);
 
         teamRepository.save(team);
-
-        keycloakService.resetTeamForParticipant(participantId);
     }
 }

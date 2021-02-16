@@ -4,6 +4,7 @@ import hu.indicium.battle.management.domain.association.Association;
 import hu.indicium.battle.management.domain.association.AssociationId;
 import hu.indicium.battle.management.domain.association.AssociationRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -20,6 +21,7 @@ public class AssociationQueryServiceImpl implements AssociationQueryService {
     }
 
     @Override
+    @PreAuthorize("hasPermission('view-association')")
     public Association getAssociationByAssociationId(AssociationId associationId) {
         return associationRepository.getAssociationById(associationId);
     }

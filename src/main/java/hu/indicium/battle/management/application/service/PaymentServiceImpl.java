@@ -1,28 +1,19 @@
 package hu.indicium.battle.management.application.service;
 
-import be.woutschoovaerts.mollie.data.common.Amount;
-import be.woutschoovaerts.mollie.data.payment.PaymentRequest;
-import be.woutschoovaerts.mollie.data.payment.PaymentResponse;
-import be.woutschoovaerts.mollie.exception.MollieException;
 import hu.indicium.battle.management.application.commands.CreatePaymentCommand;
-import hu.indicium.battle.management.domain.association.AssociationRepository;
 import hu.indicium.battle.management.domain.participant.Participant;
 import hu.indicium.battle.management.domain.participant.ParticipantId;
 import hu.indicium.battle.management.domain.participant.ParticipantRepository;
 import hu.indicium.battle.management.domain.participant.payment.*;
-import hu.indicium.battle.management.infrastructure.auth.KeycloakService;
 import hu.indicium.battle.management.infrastructure.mollie.MolliePayment;
 import hu.indicium.battle.management.infrastructure.mollie.MollieService;
-import hu.indicium.battle.management.infrastructure.util.Util;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -37,9 +28,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final MollieService mollieService;
 
-    private final KeycloakService keycloakService;
-
     @Override
+    @PreAuthorize("hasPermission('create-payment')")
     public PaymentId createPayment(CreatePaymentCommand createPaymentCommand) {
         ParticipantId participantId = createPaymentCommand.getParticipantId();
 
@@ -82,7 +72,5 @@ public class PaymentServiceImpl implements PaymentService {
         payment.updateStatus(molliePayment.getStatus());
 
         paymentRepository.save(payment);
-
-        keycloakService.setPaymentStatusPaidForParticipant(participant.getId());
     }
 }

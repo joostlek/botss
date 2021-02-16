@@ -6,6 +6,7 @@ import hu.indicium.battle.management.domain.association.AssociationId;
 import hu.indicium.battle.management.domain.association.AssociationRepository;
 import hu.indicium.battle.management.domain.association.AssociationSlugAlreadyExistsException;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +16,7 @@ public class AssociationServiceImpl implements AssociationService {
     private final AssociationRepository associationRepository;
 
     @Override
+    @PreAuthorize("hasPermission('create-association')")
     public AssociationId createAssociation(CreateAssociationCommand createAssociationCommand) {
         AssociationId associationId = AssociationId.fromSlug(createAssociationCommand.getSlug());
 

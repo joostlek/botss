@@ -2,6 +2,7 @@ package hu.indicium.battle.management.domain.participant;
 
 import hu.indicium.battle.management.domain.AssertionConcern;
 import hu.indicium.battle.management.domain.association.Association;
+import hu.indicium.battle.management.domain.association.AssociationId;
 import hu.indicium.battle.management.domain.participant.payment.Payment;
 import hu.indicium.battle.management.domain.team.ParticipantNotLegibleToTeamException;
 import hu.indicium.battle.management.domain.team.Team;
@@ -65,8 +66,16 @@ public class Participant extends AssertionConcern {
         return this.team != null;
     }
 
+    public boolean isInTeam(TeamId teamId) {
+        return this.team != null && this.team.getId().equals(teamId);
+    }
+
     public boolean isCaptain() {
         return this.captainOf != null;
+    }
+
+    public boolean isInAssociation(AssociationId associationId) {
+        return this.association != null && this.association.getId().equals(associationId);
     }
 
     public boolean eligibleToJoin() {

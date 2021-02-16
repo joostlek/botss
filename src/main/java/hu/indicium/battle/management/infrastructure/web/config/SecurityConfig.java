@@ -22,6 +22,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/associations").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .oauth2ResourceServer()
@@ -35,7 +36,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers()
-                .antMatchers(HttpMethod.POST, "/api/v1/payments/mollie")
-                .antMatchers(HttpMethod.POST, "/api/v1/associations");
+                .antMatchers(HttpMethod.POST, "/api/v1/payments/mollie");
     }
 }
