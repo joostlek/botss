@@ -9,10 +9,12 @@ import hu.indicium.battle.management.domain.team.Team;
 import hu.indicium.battle.management.domain.team.TeamId;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -36,6 +38,9 @@ public class Participant extends AssertionConcern {
 
     @OneToOne(mappedBy = "captain")
     private Team captainOf;
+
+    @CreationTimestamp
+    private Date createdAt;
 
     public Participant(ParticipantId id, ParticipantDetails participantDetails, Association association) {
         this.setId(id);
@@ -107,5 +112,9 @@ public class Participant extends AssertionConcern {
             throw new ParticipantNotLegibleToTeamException();
         }
         this.team = team;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
     }
 }
