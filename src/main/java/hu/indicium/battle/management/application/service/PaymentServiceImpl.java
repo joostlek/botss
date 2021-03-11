@@ -40,7 +40,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         if (participant.hasActivePayment()) {
-            throw new ParticipantHasActivePaymentException();
+            return participant.getActivePayment().getPaymentId();
         }
 
         PaymentId paymentId = PaymentId.fromId(UUID.randomUUID());

@@ -58,6 +58,15 @@ public class Participant extends AssertionConcern {
         return false;
     }
 
+    public Payment getActivePayment() {
+        for (Payment payment : payments) {
+            if (payment.isActive()) {
+                return payment;
+            }
+        }
+        return null;
+    }
+
     public boolean hasPaid() {
         for (Payment payment : payments) {
             if (payment.isPaid()) {
