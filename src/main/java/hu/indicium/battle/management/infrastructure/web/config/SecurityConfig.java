@@ -23,6 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/associations").permitAll()
+                .antMatchers(HttpMethod.GET, "/actuator/prometheus").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .oauth2ResourceServer()
