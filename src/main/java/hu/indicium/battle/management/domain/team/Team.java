@@ -33,7 +33,7 @@ public class Team extends AssertionConcern {
 
     public static final int MIN_PARTICIPANTS = 1;
 
-    public static final int MAX_PARTICIPANTS = 4;
+    public static final int MAX_PARTICIPANTS = 5;
 
     public Team(TeamId id, String name, Participant captain) {
         this.setId(id);
@@ -87,6 +87,10 @@ public class Team extends AssertionConcern {
 
     public boolean hasParticipant(Participant participant) {
         return members.contains(participant);
+    }
+
+    public boolean mayBeRemoved() {
+        return getTeamSize() == 1;
     }
 
     private void setId(TeamId id) {

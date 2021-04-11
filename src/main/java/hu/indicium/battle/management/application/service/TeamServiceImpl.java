@@ -1,6 +1,7 @@
 package hu.indicium.battle.management.application.service;
 
 import hu.indicium.battle.management.application.commands.CreateTeamCommand;
+import hu.indicium.battle.management.application.commands.DeleteTeamCommand;
 import hu.indicium.battle.management.application.commands.UpdateTeamCommand;
 import hu.indicium.battle.management.domain.participant.Participant;
 import hu.indicium.battle.management.domain.participant.ParticipantId;
@@ -57,6 +58,25 @@ public class TeamServiceImpl implements TeamService {
         team.setName(updateTeamCommand.getName());
 
         teamRepository.save(team);
+    }
+
+    @Override
+    @PreAuthorize("hasPermission('update-team') && isTeamCaptain(#deleteTeamCommand.teamId.id)")
+    public void deleteTeam(DeleteTeamCommand deleteTeamCommand) {
+        Team team = teamRepository.getByTeamId(deleteTeamCommand.getTeamId());
+
+        if (team.mayBeRemoved()) {
+
+            Participant captain = team.getCaptain();
+
+            captain.setTeam(null);
+
+            participantRepository.save(captain);
+
+            teamRepository.deleteById(deleteTeamCommand.getTeamId());
+        } else {
+            throw new IllegalStateException("Team may not be removed");
+        }
     }
 
     @Override

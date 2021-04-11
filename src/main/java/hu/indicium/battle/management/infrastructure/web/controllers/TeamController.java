@@ -1,6 +1,7 @@
 package hu.indicium.battle.management.infrastructure.web.controllers;
 
 import hu.indicium.battle.management.application.commands.CreateTeamCommand;
+import hu.indicium.battle.management.application.commands.DeleteTeamCommand;
 import hu.indicium.battle.management.application.commands.JoinTeamCommand;
 import hu.indicium.battle.management.application.commands.UpdateTeamCommand;
 import hu.indicium.battle.management.application.query.ParticipantQueryService;
@@ -79,8 +80,18 @@ public class TeamController {
         teamService.updateTeam(updateTeamCommand);
         Team team = teamQueryService.getTeamById(id);
         TeamDto teamDto = new TeamDto(team);
-        return ResponseBuilder.created()
+        return ResponseBuilder.ok()
                 .data(teamDto)
+                .build();
+    }
+
+    @DeleteMapping("/{teamId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Response<?> deleteTeam(@PathVariable UUID teamId, @RequestBody DeleteTeamCommand deleteTeamCommand) {
+        TeamId id = TeamId.fromUUID(teamId);
+        deleteTeamCommand.setTeamId(id);
+        teamService.deleteTeam(deleteTeamCommand);
+        return ResponseBuilder.ok()
                 .build();
     }
 
