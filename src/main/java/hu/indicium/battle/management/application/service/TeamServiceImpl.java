@@ -73,7 +73,7 @@ public class TeamServiceImpl implements TeamService {
 
             participantRepository.save(captain);
 
-            teamRepository.deleteById(deleteTeamCommand.getTeamId());
+            teamRepository.delete(team);
         } else {
             throw new IllegalStateException("Team may not be removed");
         }

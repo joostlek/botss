@@ -39,7 +39,7 @@ public class TeamRepositoryImpl implements TeamRepository {
     }
 
     @Override
-    public void deleteById(TeamId teamId) {
-        teamRepository.deleteById(teamId);
+    public void delete(Team team) {
+        teamRepository.delete(team);
     }
 }
