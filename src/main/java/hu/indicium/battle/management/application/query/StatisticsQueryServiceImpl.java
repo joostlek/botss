@@ -1,5 +1,7 @@
 package hu.indicium.battle.management.application.query;
 
+import hu.indicium.battle.management.domain.association.Association;
+import hu.indicium.battle.management.domain.association.AssociationRepository;
 import hu.indicium.battle.management.domain.participant.Participant;
 import hu.indicium.battle.management.domain.participant.ParticipantRepository;
 import hu.indicium.battle.management.domain.team.Team;
@@ -24,6 +26,8 @@ public class StatisticsQueryServiceImpl implements StatisticsQueryService {
 
     private final TeamRepository teamRepository;
 
+    private final AssociationRepository associationRepository;
+
     @Override
     @PreAuthorize("hasPermission('manage-association')")
     public Map<String, Long> getRegistrationsByDate() {
@@ -36,10 +40,10 @@ public class StatisticsQueryServiceImpl implements StatisticsQueryService {
     @Override
     @PreAuthorize("hasPermission('manage-association')")
     public Map<String, Integer> getRegistrationsByAssociation() {
-        Collection<Team> teams = teamRepository.getAllTeams();
+        Collection<Association> associations = associationRepository.getAllAssociations();
         Map<String, Integer> result = new HashMap<>();
-        for (Team team : teams) {
-            result.put(team.getName(), team.getTeamSize());
+        for (Association association : associations) {
+            result.put(association.getName(), association.getSize());
         }
         return result;
     }

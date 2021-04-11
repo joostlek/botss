@@ -1,11 +1,15 @@
 package hu.indicium.battle.management.domain.association;
 
 import hu.indicium.battle.management.domain.AssertionConcern;
+import hu.indicium.battle.management.domain.participant.Participant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import java.util.Collection;
 
 @Getter
 @Entity
@@ -18,10 +22,17 @@ public class Association extends AssertionConcern {
 
     private String logoUrl;
 
+    @OneToMany(mappedBy = "association")
+    private Collection<Participant> participants;
+
     public Association(AssociationId id, String name, String logoUrl) {
         this.setId(id);
         this.setName(name);
         this.setLogoUrl(logoUrl);
+    }
+
+    public int getSize() {
+        return participants.size();
     }
 
     public void setId(AssociationId id) {
