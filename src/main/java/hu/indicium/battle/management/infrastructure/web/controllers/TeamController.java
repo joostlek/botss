@@ -87,8 +87,9 @@ public class TeamController {
 
     @DeleteMapping("/{teamId}")
     @ResponseStatus(HttpStatus.OK)
-    public Response<?> deleteTeam(@PathVariable UUID teamId, @RequestBody DeleteTeamCommand deleteTeamCommand) {
+    public Response<?> deleteTeam(@PathVariable UUID teamId) {
         TeamId id = TeamId.fromUUID(teamId);
+        DeleteTeamCommand deleteTeamCommand = new DeleteTeamCommand();
         deleteTeamCommand.setTeamId(id);
         teamService.deleteTeam(deleteTeamCommand);
         return ResponseBuilder.ok()
