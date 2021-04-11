@@ -24,7 +24,7 @@ public class Team extends AssertionConcern {
     @Column(unique = true)
     private String joinCode;
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "team", cascade = {CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
     private Collection<Participant> members;
 
     @OneToOne
