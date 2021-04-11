@@ -6,4 +6,6 @@ import java.util.Map;
 
 public interface StatisticsQueryService {
     Map<String, Long> getRegistrationsByDate();
+
+    Map<String, Integer> getRegistrationsByAssociation();
 }

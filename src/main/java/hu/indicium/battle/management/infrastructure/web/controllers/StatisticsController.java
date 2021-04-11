@@ -26,4 +26,12 @@ public class StatisticsController {
                 .data(statisticsQueryService.getRegistrationsByDate())
                 .build();
     }
+
+    @GetMapping("/size")
+    @ResponseStatus(HttpStatus.OK)
+    public Response<Map<String, Integer>> getRegistrationsByAssociation() {
+        return ResponseBuilder.ok()
+                .data(statisticsQueryService.getRegistrationsByAssociation())
+                .build();
+    }
 }
